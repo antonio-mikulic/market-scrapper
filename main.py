@@ -81,7 +81,7 @@ def itemsToSheet(ws: Worksheet, row, items):
     return ws
 
 
-def extractToExcel(fileName, items):
+def extractToExcel(fileName, items=None):
     items = items if items else NjuskaloAdDB.select()
     print(datetime.datetime.now(), f"Saving {len(items)} items")
     if(len(items) == 0):
