@@ -49,7 +49,9 @@ class NjuskaloSpider(scrapy.Spider):
             try:
                 next_page_num = response.css(".Pagination-item--next").xpath(".//button/@data-page").extract_first()
                 if(not next_page_num):
-                    raise "Next page BUTTON not found... Search for A HREF"
+                    error = "Next page BUTTON not found... Search for A HREF"
+                    print(datetime.datetime.now(), "Next page BUTTON not found... Search for A HREF")
+                    raise BaseException(error)
             except: 
                 link = response.css(".Pagination-item--next").xpath(".//a/@href").extract_first()
                 next_page_num = re.findall(r'\d+', link)[-1]
@@ -60,6 +62,6 @@ class NjuskaloSpider(scrapy.Spider):
                 print(datetime.datetime.now(), "Next page not found")
 
         except BaseException as e:
-            print(datetime.datetime.now(), "Failed to scrape: ", e)
+            print(datetime.datetime.now(), "Failed to scrape")
 
 

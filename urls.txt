@@ -1,1 +1,1 @@
-https://www.njuskalo.hr/auti
+https://www.njuskalo.hr/prodaja-kuca?geo%5BlocationIds%5D=1262%2C1261%2C1260%2C1258%2C1760&price%5Bmin%5D=80000&price%5Bmax%5D=220000&houseBuildingType=detached-house
