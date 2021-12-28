@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import scrapy
 
 from conf import MAX_PAGE_COUNT
@@ -19,6 +20,7 @@ class NjuskaloSpider(scrapy.Spider):
         self.base_url = 'https://www.njuskalo.hr'
 
     def parse(self, response):
+        print(datetime.datetime.now(), f"Scrapping {response.url}")
         try:
             articles = response.xpath("//ul[@class='EntityList-items' and count(.//div[@class='entity-pub-date']) > 0]/li/article")
             for article in articles:
@@ -55,9 +57,9 @@ class NjuskaloSpider(scrapy.Spider):
             if next_page_num and int(next_page_num) <= MAX_PAGE_COUNT:
                 yield scrapy.Request(url=create_next_page_link(response.url, int(next_page_num)))
             else:
-                print("Next page not found")
+                print(datetime.datetime.now(), "Next page not found")
 
         except BaseException as e:
-            print("Failed to scrape: ", e)
+            print(datetime.datetime.now(), "Failed to scrape: ", e)
 
 

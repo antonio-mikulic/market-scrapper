@@ -22,7 +22,7 @@ notifier = Notifier()
 
 
 def _crawl(queue, urls):
-    print("Crawling on url", urls)
+    print(datetime.datetime.now(), "Crawling on url", urls)
     items_scraped = []
 
     def item_scraped(item, response, spider):
@@ -43,16 +43,22 @@ def crawl_njuskalo(urls=None):
     items_scraped = queue.get()
     process.join()
 
-    print("Scrapping finished")
+    print(datetime.datetime.now(), "Scrapping finished")
     if items_scraped:
         lastInterval = datetime.datetime.now() - datetime.timedelta(seconds=INTERVAL_MINUTES * 60 + 5) 
         items = NjuskaloAdDB.select().where(NjuskaloAdDB.scrappedDate >= lastInterval)
-        
         notifier.new_items_received(items)
-        if(SAVE_ON_SCRAPE): 
-            date = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-            extractData(os.path.join("reports", f"{date}.xlsx"))
+        saveAllData(items)
 
+def saveAllData(items):
+    if(SAVE_ON_SCRAPE and len(items) > 0): 
+        print(datetime.datetime.now(), "Started saving data")
+        date = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        isExist = os.path.exists("reports")
+        if not isExist:
+            os.makedirs("reports")
+        
+        extractToExcel(os.path.join("reports", f"{date} - {len(items)} items.xlsx"), items)
 
 def itemToSheet(ws: Worksheet, row, item):
     col = 1
@@ -75,10 +81,11 @@ def itemsToSheet(ws: Worksheet, row, items):
     return ws
 
 
-def extractData(fileName):
-    items = NjuskaloAdDB.select()
+def extractToExcel(fileName, items):
+    items = items if items else NjuskaloAdDB.select()
+    print(datetime.datetime.now(), f"Saving {len(items)} items")
     if(len(items) == 0):
-        print("No items in database")
+        print(datetime.datetime.now(), "No items in database")
         return
 
     workbook = Workbook()
@@ -117,14 +124,14 @@ def main():
     try:
         if(input.f):
             urls = parse_urls_file(input.f)
-            print(f"Scrapping on {urls}")
+            print(datetime.datetime.now(),f"Scrapping on {urls}")
             start_crawl(urls)
         elif (input.e):
-            extractData(input.e)
+            extractToExcel(input.e)
         else:
             raise "Use -e fileName.xlsx for extracting OR -f fileName.txt for scrapping"
     finally:
-        print("Shutting down")
+        print(datetime.datetime.now(), "Shutting down")
 
 
 if __name__ == '__main__':
