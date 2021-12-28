@@ -1,0 +1,5 @@
+openpyxl==3.0.9
+peewee==3.8.2
+schedule==0.5.0
+Scrapy==1.5.1
+win10toast==0.9
